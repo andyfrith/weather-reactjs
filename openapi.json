@@ -1,0 +1,479 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Weather API",
+    "version": "1.0.0",
+    "description": "A RESTful API service that provides current weather data for cities worldwide. Powered by OpenWeather API with intelligent caching and comprehensive error handling.",
+    "contact": { "name": "API Support" },
+    "license": { "name": "MIT" }
+  },
+  "servers": [
+    { "url": "http://localhost:3000", "description": "Development server" }
+  ],
+  "tags": [
+    { "name": "Weather", "description": "Weather data endpoints" },
+    { "name": "Health", "description": "Service health and status endpoints" }
+  ],
+  "components": {
+    "schemas": {
+      "CurrentWeatherResponse": {
+        "type": "object",
+        "properties": {
+          "location": { "$ref": "#/components/schemas/Location" },
+          "weather": { "$ref": "#/components/schemas/WeatherCondition" },
+          "temperature": { "$ref": "#/components/schemas/Temperature" },
+          "wind": { "$ref": "#/components/schemas/Wind" },
+          "atmosphere": { "$ref": "#/components/schemas/Atmosphere" },
+          "precipitation": { "$ref": "#/components/schemas/Precipitation" },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data calculation timestamp in ISO 8601 format",
+            "example": "2024-01-15T12:00:00Z"
+          },
+          "cached": {
+            "type": "boolean",
+            "description": "Whether the response was served from cache",
+            "example": false
+          }
+        },
+        "required": [
+          "location",
+          "weather",
+          "temperature",
+          "wind",
+          "atmosphere",
+          "timestamp",
+          "cached"
+        ]
+      },
+      "Location": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "City name",
+            "example": "London"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country code",
+            "example": "GB"
+          },
+          "coordinates": { "$ref": "#/components/schemas/Coordinates" },
+          "timezone": {
+            "type": "number",
+            "description": "Timezone offset from UTC in seconds",
+            "example": 0
+          },
+          "sunrise": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Sunrise time in ISO 8601 format",
+            "example": "2024-01-15T07:45:00Z"
+          },
+          "sunset": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Sunset time in ISO 8601 format",
+            "example": "2024-01-15T16:30:00Z"
+          }
+        },
+        "required": [
+          "name",
+          "country",
+          "coordinates",
+          "timezone",
+          "sunrise",
+          "sunset"
+        ]
+      },
+      "Coordinates": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "description": "Latitude",
+            "example": 51.5074
+          },
+          "lon": {
+            "type": "number",
+            "description": "Longitude",
+            "example": -0.1278
+          }
+        },
+        "required": ["lat", "lon"]
+      },
+      "WeatherCondition": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Weather condition ID",
+            "example": 800
+          },
+          "main": {
+            "type": "string",
+            "description": "Group of weather parameters",
+            "example": "Clear"
+          },
+          "description": {
+            "type": "string",
+            "description": "Weather condition description",
+            "example": "clear sky"
+          },
+          "icon": {
+            "type": "string",
+            "description": "Weather icon ID",
+            "example": "01d"
+          }
+        },
+        "required": ["id", "main", "description", "icon"]
+      },
+      "Temperature": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "type": "number",
+            "description": "Current temperature",
+            "example": 22.5
+          },
+          "feels_like": {
+            "type": "number",
+            "description": "Human perception of temperature",
+            "example": 21.8
+          },
+          "min": {
+            "type": "number",
+            "description": "Minimum temperature",
+            "example": 19
+          },
+          "max": {
+            "type": "number",
+            "description": "Maximum temperature",
+            "example": 25
+          },
+          "unit": {
+            "type": "string",
+            "enum": ["°C", "°F"],
+            "description": "Temperature unit",
+            "example": "°C"
+          }
+        },
+        "required": ["current", "feels_like", "min", "max", "unit"]
+      },
+      "Wind": {
+        "type": "object",
+        "properties": {
+          "speed": {
+            "type": "number",
+            "description": "Wind speed",
+            "example": 5.2
+          },
+          "direction": {
+            "type": "number",
+            "description": "Wind direction in degrees",
+            "example": 180
+          },
+          "gust": {
+            "type": "number",
+            "description": "Wind gust speed",
+            "example": 7.8
+          },
+          "unit": {
+            "type": "string",
+            "enum": ["m/s", "mph"],
+            "description": "Wind speed unit",
+            "example": "m/s"
+          }
+        },
+        "required": ["speed", "direction", "unit"]
+      },
+      "Atmosphere": {
+        "type": "object",
+        "properties": {
+          "humidity": {
+            "type": "number",
+            "description": "Humidity percentage",
+            "example": 65
+          },
+          "pressure": {
+            "type": "number",
+            "description": "Atmospheric pressure in hPa",
+            "example": 1013
+          },
+          "visibility": {
+            "type": "number",
+            "description": "Visibility in meters",
+            "example": 10000
+          },
+          "cloudiness": {
+            "type": "number",
+            "description": "Cloudiness percentage",
+            "example": 20
+          }
+        },
+        "required": ["humidity", "pressure", "visibility", "cloudiness"]
+      },
+      "Precipitation": {
+        "type": "object",
+        "properties": {
+          "rain": { "$ref": "#/components/schemas/RainVolume" },
+          "snow": { "$ref": "#/components/schemas/SnowVolume" }
+        }
+      },
+      "RainVolume": {
+        "type": "object",
+        "properties": {
+          "1h": {
+            "type": "number",
+            "description": "Rain volume for the last 1 hour in mm",
+            "example": 0.5
+          },
+          "3h": {
+            "type": "number",
+            "description": "Rain volume for the last 3 hours in mm",
+            "example": 1.2
+          }
+        }
+      },
+      "SnowVolume": {
+        "type": "object",
+        "properties": {
+          "1h": {
+            "type": "number",
+            "description": "Snow volume for the last 1 hour in mm",
+            "example": 0
+          },
+          "3h": {
+            "type": "number",
+            "description": "Snow volume for the last 3 hours in mm",
+            "example": 0
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": { "$ref": "#/components/schemas/ErrorDetails" }
+        },
+        "required": ["error"]
+      },
+      "ErrorDetails": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "description": "HTTP error code",
+            "example": 404
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "City not found"
+          },
+          "details": {
+            "type": "string",
+            "description": "Additional error details",
+            "example": "No location found for the provided city name"
+          }
+        },
+        "required": ["code", "message"]
+      },
+      "RateLimitError": {
+        "type": "object",
+        "properties": {
+          "error": { "$ref": "#/components/schemas/RateLimitErrorDetails" }
+        },
+        "required": ["error"]
+      },
+      "RateLimitErrorDetails": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "enum": [429],
+            "description": "Rate limit error code",
+            "example": 429
+          },
+          "message": {
+            "type": "string",
+            "enum": ["Rate limit exceeded"],
+            "description": "Rate limit error message",
+            "example": "Rate limit exceeded"
+          },
+          "retryAfter": {
+            "type": "number",
+            "description": "Seconds to wait before retrying",
+            "example": 60
+          }
+        },
+        "required": ["code", "message"]
+      },
+      "HealthCheckResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["healthy", "degraded", "unhealthy"],
+            "description": "Service health status",
+            "example": "healthy"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Current timestamp in ISO 8601 format",
+            "example": "2024-01-15T12:00:00Z"
+          },
+          "version": {
+            "type": "string",
+            "description": "API version",
+            "example": "1.0.0"
+          },
+          "uptime": {
+            "type": "number",
+            "description": "Service uptime in seconds",
+            "example": 3600
+          }
+        },
+        "required": ["status", "timestamp", "version", "uptime"]
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {
+    "/weather/current": {
+      "get": {
+        "tags": ["Weather"],
+        "summary": "Get current weather",
+        "description": "Retrieves current weather data for a specified city using the OpenWeather API.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "City name (e.g., 'London', 'New York', 'Tokyo')",
+              "example": "London"
+            },
+            "required": true,
+            "description": "City name (e.g., 'London', 'New York', 'Tokyo')",
+            "name": "city",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["metric", "imperial"],
+              "default": "metric",
+              "description": "Temperature units: 'metric' (Celsius) or 'imperial' (Fahrenheit)",
+              "example": "metric"
+            },
+            "required": false,
+            "description": "Temperature units: 'metric' (Celsius) or 'imperial' (Fahrenheit)",
+            "name": "units",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2,
+              "default": "en",
+              "description": "Language code for descriptions (e.g., 'en', 'es', 'fr')",
+              "example": "en"
+            },
+            "required": false,
+            "description": "Language code for descriptions (e.g., 'en', 'es', 'fr')",
+            "name": "lang",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current weather data retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentWeatherResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid API key",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "City not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RateLimitError" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable - OpenWeather API unreachable",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway timeout - OpenWeather API timed out",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "Health check",
+        "description": "Returns the health status of the Weather API service.",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HealthCheckResponse" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
