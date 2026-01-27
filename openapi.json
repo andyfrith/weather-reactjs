@@ -11,6 +11,7 @@
     { "url": "http://localhost:3000", "description": "Development server" }
   ],
   "tags": [
+    { "name": "AI", "description": "AI data endpoints" },
     { "name": "Weather", "description": "Weather data endpoints" },
     { "name": "Health", "description": "Service health and status endpoints" }
   ],
@@ -337,6 +338,17 @@
           }
         },
         "required": ["status", "timestamp", "version", "uptime"]
+      },
+      "AIQuery": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "AI message (e.g., 'Write a short poem about coding.')",
+            "example": "Write a short poem about coding."
+          }
+        },
+        "required": ["prompt"]
       }
     },
     "parameters": {}
@@ -350,12 +362,35 @@
         "parameters": [
           {
             "schema": {
+              "type": "number",
+              "nullable": true,
+              "description": "Latitude",
+              "example": 51.5074
+            },
+            "required": false,
+            "description": "Latitude",
+            "name": "lat",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "nullable": true,
+              "description": "Longitude",
+              "example": -0.1278
+            },
+            "required": false,
+            "description": "Longitude",
+            "name": "lon",
+            "in": "query"
+          },
+          {
+            "schema": {
               "type": "string",
-              "minLength": 1,
               "description": "City name (e.g., 'London', 'New York', 'Tokyo')",
               "example": "London"
             },
-            "required": true,
+            "required": false,
             "description": "City name (e.g., 'London', 'New York', 'Tokyo')",
             "name": "city",
             "in": "query"
@@ -469,6 +504,39 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/HealthCheckResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ai/text": {
+      "post": {
+        "tags": ["AI"],
+        "summary": "Text",
+        "description": "Returns the text of the AI service.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AIQuery" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "AI text data retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "description": "text response from AI"
+                    }
+                  },
+                  "required": ["text"]
+                }
               }
             }
           }

@@ -1,0 +1,19 @@
+.hero {
+  height: 400px;
+  width: 100%;
+  background-color: #bdbdbd;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.title {
+  font-family: "Playfair Display", serif;
+  font-size: 3.25rem;
+  line-height: 1.2;
+  text-align: center;
+  margin: 0 3.25rem 3.25rem 3.25rem;
+}

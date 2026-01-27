@@ -1,0 +1,17 @@
+.quote {
+  font-family: "Playfair Display", serif;
+  font-size: 1.2rem;
+  background-color: #f8f8f8;
+  padding: 2rem 2rem;
+  line-height: 1.5;
+  font-weight: 400;
+  font-style: italic;
+  margin: calc(var(--spacing) * 10) 0 0 0;
+  color: #828282;
+}
+
+.quotation-mark {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #828282;
+}

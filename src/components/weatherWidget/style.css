@@ -1,0 +1,42 @@
+.weather-widget {
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 2rem;
+  margin: calc(var(--spacing) * 5) 0 calc(var(--spacing) * 10) 0;
+}
+
+.weather-widget-title {
+  /* font-family: "Playfair Display", serif; */
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #828282;
+}
+
+.weather-widget-current-temperature {
+  /* font-family: "Playfair Display", serif; */
+  font-size: 2rem;
+  font-weight: 700;
+  color: #828282;
+}
+
+.weather-widget-max-min {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #828282;
+}
+
+.weather-widget-main {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #828282;
+}
+
+.weather-widget-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}

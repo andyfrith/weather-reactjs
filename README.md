@@ -5,7 +5,7 @@
 [![Client: Zod-OpenAPI](https://img.shields.io/badge/Client-Zod--OpenAPI-blue?style=flat-square)](https://github.com/asteasolutions/zod-to-openapi)
 [![Connected To: Weather API](https://img.shields.io/badge/API-Weather_API-orange?style=flat-square)](https://github.com/andyfrith/weather-api)
 
-A clean, foundational **React.js** application designed to consume the [Weather API](https://github.com/andyfrith/weather-api). This project serves as a streamlined starting point for developers looking to build modern frontends with **strict contract-based integration**.
+A clean, foundational **React.js** application designed to consume the [Weather API](https://github.com/andyfrith/weather-api). This project serves as a streamlined starting point for building modern React frontends with **strict contract-based integration**.
 
 ## ✨ Key Features
 
@@ -41,3 +41,11 @@ git clone [https://github.com/andyfrith/weather-reactjs.git](https://github.com/
 cd weather-reactjs
 npm install  # or bun install
 ```
+
+## 📫 Let's Connect
+
+- **Portfolio**: [andyfrith.com](https://andyfrith.com)
+- **LinkedIn**: [linkedin.com/in/goodapplemedia](https://linkedin.com/in/goodapplemedia)
+- **GitHub**: [@andyfrith](https://github.com/andyfrith)
+
+> _"Delivering sound, proven, and trusted architecture solutions that are ready for any challenge."_
