@@ -7,6 +7,8 @@
 
 A clean, foundational **React.js** application designed to consume the [Weather API](https://github.com/andyfrith/weather-api). This project serves as a streamlined starting point for building modern React frontends with **strict contract-based integration**.
 
+[![Product Name Screen Shot][product-screenshot]](https://github.com/andyfrith/weather-reactjs)
+
 ## ✨ Key Features
 
 - **📝 Zod OpenAPI Client**: Leverage the power of Zod and OpenAPI to ensure that the data consumed from the API is always valid and correctly typed.
@@ -49,3 +51,5 @@ npm install  # or bun install
 - **GitHub**: [@andyfrith](https://github.com/andyfrith)
 
 > _"Delivering sound, proven, and trusted architecture solutions that are ready for any challenge."_
+
+[product-screenshot]: /screenshot-denver.png
