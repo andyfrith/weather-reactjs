@@ -2,9 +2,9 @@
 import { schemas } from "../../generated/Weather";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
-// import { AIApi } from "../../generated";
+import { AIApi } from "../../generated";
 import type { ArticleType } from "../types";
-import { aiTextDenver as placeholderAiText } from "../data/placeholder";
+// import { aiTextDenver as placeholderAiText } from "../data/placeholder";
 
 type Weather = z.infer<typeof schemas.CurrentWeatherResponse>;
 
@@ -22,13 +22,18 @@ const getArticle = async (weather: Weather | undefined) => {
   console.log("getArticle: weather", weather);
   console.log("getArticle: prompt", getPrompt(weather));
   // return Promise.resolve(placeholderArticle);
-  //   const aiText = await AIApi.postAitext({
-  //     prompt: getPrompt(weather),
-  //   });
-  const aiText = placeholderAiText;
-  const jsonRegex = /```json\s*([\s\S]*?)\s*```/;
-  const match = aiText.text.match(jsonRegex);
-  return JSON.parse((match && match[1]) || "") as ArticleType;
+  /* OLLAMA */
+  const aiText = await AIApi.postAitext({
+    prompt: getPrompt(weather),
+  });
+  return JSON.parse(aiText.text || "") as ArticleType;
+  /* END OLLAMA */
+  // const aiText = placeholderAiText;
+  /* GEMINI
+  // const jsonRegex = /```json\s*([\s\S]*?)\s*```/;
+  // const match = aiText.text.match(jsonRegex);
+  // return JSON.parse((match && match[1]) || "") as ArticleType;
+  /* END GEMINI */
 };
 
 export const useGetArticle = (params: GetArticleQueryParams) => {
